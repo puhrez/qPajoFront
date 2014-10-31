@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="qpajo" ng-controller="qpajo.appCtrl">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>qpajo</title>
+    <link rel="stylesheet" href="stylesheets/main.css">
+</head>
+<body>
+    <qpajo.header></qpajo.header>
+    <ng-view>
+    </ng-view>
+    <script src="app.js"></script>
+    <qpajo.login ng-if="app.showLogin"></qpajo.login>
+</body>
+</html>

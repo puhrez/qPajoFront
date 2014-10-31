@@ -1,0 +1,40 @@
+{
+  "name": "qPajo",
+  "description": "An event discovery app",
+  "version": "0.0.1",
+  "private": true,
+  "repository": "e https://bitbucket.org/quePasaTeam/que-pasa.git",
+  "authors": [
+    "Michael Perez <Michael@nighnight.com>",
+    "Alberto de la Cruz <alberto@nighnight.com>"
+  ],
+  "devDependencies": {
+    "browser-sync": "^1.3.3",
+    "browserify": "^5.9.1",
+    "coffeeify": "^0.7.0",
+    "gulp": "^3.8.7",
+    "gulp-awspublish": "0.0.22",
+    "gulp-awspublish-router": "0.0.0",
+    "gulp-changed": "^0.4.1",
+    "gulp-clean": "^0.3.1",
+    "gulp-cssfont64": "0.0.1",
+    "gulp-csso": "^0.2.9",
+    "gulp-es6-transpiler": "^0.2.0",
+    "gulp-html-minifier": "^0.1.5",
+    "gulp-imagemin": "^0.6.2",
+    "gulp-less": "^1.3.3",
+    "gulp-notify": "^1.4.2",
+    "gulp-uglify": "^0.3.1",
+    "gulp-util": "^3.0.0",
+    "partialify": "^3.1.1",
+    "pretty-hrtime": "^0.2.1",
+    "require-dir": "^0.1.0",
+    "uglifyify": "^2.5.0",
+    "vinyl-source-stream": "^0.1.1",
+    "watchify": "^1.0.1"
+  },
+  "dependencies": {
+    "angular": "^1.2.23",
+    "angular-route": "^1.2.17-build.163.1"
+  }
+}

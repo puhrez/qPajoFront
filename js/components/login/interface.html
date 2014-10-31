@@ -1,0 +1,32 @@
+<div class="cover">
+    <div class="pop-up center">
+      <div style="float:right" ng-click="LoginCtrl.close()">X</div>
+      <toggle 
+        ctrl="LoginCtrl" 
+        left="LoginCtrl.login.title"
+        right="LoginCtrl.register.title">
+      </toggle>
+        <form class="loginForm">
+          <div>
+          <label for="email" ng-show="LoginCtrl.showLogin">Email</label>
+          <input ng-show="LoginCtrl.showLogin" 
+                 id="email"
+                 type="email" 
+                 ng-model="LoginCtrl.user.email">
+          </div>
+          <div>
+          <label for="username">Username</label>
+          <input type="text" 
+                 id="username"
+                 ng-model="LoginCtrl.user.username">
+          </div>
+          <div>
+           <label for="password">Password</label>
+          <input type="password"
+                 id="password"
+                 ng-model="LoginCtrl.user.pass"></div>
+          <div>
+          </div>
+        </form>
+    </div>
+</div>
