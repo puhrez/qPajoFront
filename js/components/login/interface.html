@@ -7,9 +7,9 @@
         right="LoginCtrl.register.title">
       </toggle>
         <form class="loginForm">
-          <div>
-          <label for="email" ng-show="LoginCtrl.showLogin">Email</label>
-          <input ng-show="LoginCtrl.showLogin" 
+          <div ng-if="!LoginCtrl.bool">
+          <label for="email">Email</label>
+          <input
                  id="email"
                  type="email" 
                  ng-model="LoginCtrl.user.email">
@@ -18,15 +18,18 @@
           <label for="username">Username</label>
           <input type="text" 
                  id="username"
-                 ng-model="LoginCtrl.user.username">
+                 ng-model="LoginCtrl.user.id">
           </div>
           <div>
            <label for="password">Password</label>
           <input type="password"
                  id="password"
-                 ng-model="LoginCtrl.user.pass"></div>
+                 ng-model="LoginCtrl.user.password"></div>
           <div>
           </div>
         </form>
+        <div>
+            <div ng-click="LoginCtrl.submit()"class="btn bordered center">{{LoginCtrl.btn.message}}</div>
+        </div>
     </div>
 </div>

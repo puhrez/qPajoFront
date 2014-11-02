@@ -32,7 +32,7 @@ gulp.task("browserify", function () {
       .bundle()
       .on('error', errorHandler)
       .pipe(source('app.js'))
-      .pipe(gulp.dest('../public/'))
+      .pipe(gulp.dest('./js'))
       .on('end', bundleLog.end);
   };
 
