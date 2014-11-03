@@ -1,6 +1,6 @@
 "use strict"
 angular = require "angular"
-module.exports =
+module.exports = ["$location",
   ($location) ->
     unwatch = (watchers, cb) ->
       ->
@@ -64,5 +64,4 @@ module.exports =
           
         new: (opts) ->
           new State(opts)
-    
-      
+]

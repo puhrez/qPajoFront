@@ -1,9 +1,9 @@
-module.exports = ($httpBackend) ->
-  console.log "hitting register post"
+module.exports = ($httpBackend, $log) ->
+  $log.debug "backend init"
   users = []
   session = 0
   $httpBackend.whenPOST("/auth/register").respond((method, url, data) ->
-    console.log "hitting register post"
+    $log.debug "hitting register post"
     user = angular.fromJson data
     users.push user
     [
@@ -12,15 +12,15 @@ module.exports = ($httpBackend) ->
       {}
     ]
   )
+  $httpBackend.whenGET(/S*\.html$/).passThrough()
   $httpBackend.whenPOST("/auth/login").respond((method, url, data) ->
-    console.log "hitting login post"
+    $log.debug "hitting login post"
     creds = angular.fromJson data
     successData =
       data:
         id: session += 1
         user: creds
-    console.log "successData", successData
+    $log.debug "successData", successData
     return successData for user in users when creds is user
     return 400
   )
-  $httpBackend.whenGET(/^\/views\//).passThrough()

@@ -3,11 +3,11 @@
 module.exports = ->
   class ToggleCtrl
     state = "right"
-    constructor: (@$scope) ->
+    constructor: (@$scope, @$log) ->
       @right = @$scope.right
       @left = @$scope.left
       @bool = @$scope.ctrl.bool
-      console.log "toggle init"
+      @$log.debug "toggle init"
     toggle: (e) ->
       side = e.target.className.split(" ")[0]
       if @state isnt side
@@ -20,7 +20,7 @@ module.exports = ->
     ctrl: "="
   restrict: "E"
   controllerAs: "ToggleCtrl"
-  controller: ["$scope", ($scope) ->
-    new ToggleCtrl($scope)
+  controller: ["$scope", "$log", ($scope, $log) ->
+    new ToggleCtrl($scope, $log)
   ]
   template: require "./toggle.html"

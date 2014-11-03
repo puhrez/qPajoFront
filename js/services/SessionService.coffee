@@ -1,7 +1,7 @@
-module.exports = () ->
+module.exports = ["$log", ($log) ->
   new class Session
     constructor: ->
-      console.log "session init"
+      $log.debug "session init"
     create: (sessionId, userId, userRole) ->
       @id = sessionId
       @userId = userId
@@ -10,3 +10,4 @@ module.exports = () ->
       @id = null
       @userId = null
       @userRole = null
+]

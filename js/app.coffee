@@ -11,7 +11,9 @@ angular.module("qpajo", [
   require("./components/index.coffee").name
   "ngMockE2E"
 ])
-  .controller "qpajo.appCtrl", ["$scope", "USER_ROLES",
-                                "AuthService", require "./appCtrl.coffee"]
+  .controller "qpajo.appCtrl", require "./appCtrl.coffee"
   .config require "./routes.coffee"
-  #.run require "./fakeBack.coffee" #for E2E
+  .config ["$logProvider", ($logProvider) ->
+    $logProvider.debugEnabled true
+  ]
+  .run require "./fakeBack.coffee" #for E2E

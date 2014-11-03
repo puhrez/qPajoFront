@@ -24,12 +24,7 @@
            <label for="password">Password</label>
           <input type="password"
                  id="password"
-                 ng-model="LoginCtrl.user.password"></div>
-          <div>
-          </div>
+                 ng-model="LoginCtrl.user.password"></div>    
+        <button type="submit" ng-click="LoginCtrl.submit()" class="btn bordered center">{{LoginCtrl.btn.message}}</button>
         </form>
-        <div>
-            <div ng-click="LoginCtrl.submit()"class="btn bordered center">{{LoginCtrl.btn.message}}</div>
-        </div>
-    </div>
 </div>

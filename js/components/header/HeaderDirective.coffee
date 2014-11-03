@@ -2,16 +2,21 @@
 
 module.exports = ->
   class HeaderCtrl
-    constructor: (@$scope) ->
-      console.log "header init"
+    constructor: (@$scope, @$rootScope, @$log) ->
+      @$log.debug "header init"
       @$scope.model =
-        message: "Sign-in"
+        message: if $scope.app.isAuthenticated then "&#5864;" else "Login"
+      @$rootScope.$on "auth-login-success", ->
+        @$scope.model.message = "&#5864;"
     openLogin: ->
       @$scope.app.showLogin = true
-      console.log "opening login"
+      @$log.debug "opening login"
   restrict: 'E'
   controllerAs: "HeaderCtrl"
-  controller: ["$scope", ($scope) ->
-    new HeaderCtrl($scope)
+  controller: [
+    "$scope",
+    "$rootScope",
+    "$log", ($scope, $rootScope, $log) ->
+      new HeaderCtrl($scope, $rootScope, $log)
   ]
   template: require "./header.html"

@@ -3,7 +3,7 @@
 angular = require "angular"
 module.exports = ->
   class TabSetCtrl
-    constructor: (@$scope) ->
+    constructor: (@$scope, @$log) ->
       @$scope.templateUrl = ""
       @tabs = @$scope.tabs = []
     selectTab: (tab) ->
@@ -12,7 +12,7 @@ module.exports = ->
       )
       tab.selected = true
     setTabTemplate: (templateUrl) ->
-      console.log "setting template"
+      @$log.debug "setting template"
       @$scope.templateUrl = templateUrl
     addTab: (tab) ->
       if @tabs.length == 0
@@ -23,8 +23,8 @@ module.exports = ->
   restrict: "E"
   transclude: true
   controllerAs: "TabsetCtrl"
-  controller: ["$scope", ($scope) ->
-    new TabSetCtrl($scope)
+  controller: ["$scope", "$log", ($scope, $log) ->
+    new TabSetCtrl($scope, $log)
   ]
   template: require "./tabset.html"
 

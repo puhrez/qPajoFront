@@ -1,9 +1,9 @@
 "use strict"
 angular = require "angular"
-module.exports = ($http, Session) ->
+module.exports = ["$http","SessionService", "$log",($http, Session, $log) ->
   new class AuthService
     constructor: () ->
-      console.log "auth service init"
+      $log.debug "auth service init"
       @users = []
     register: (credentials) ->
       console.log "registering", credentials
@@ -13,12 +13,13 @@ module.exports = ($http, Session) ->
           true
         )
     login: (credentials) ->
+      $log.debug "logging in"
       return $http
         .post("/auth/login", credentials)
         .then((res) ->
-          console.log res
+          $log.debug "responce", res
           Session.create(res.data.id, res.data.user.id, res.data.user.role)
-          res.data.user
+          return res.data.user
         )
     isAuthenticated: ->
       !!Session.userId
@@ -27,3 +28,4 @@ module.exports = ($http, Session) ->
         authorizedRoles = [authorizedRoles]
       @isAuthenticated() and
         authorizedRoles.indexOf Session.userRole isnt -1
+]
