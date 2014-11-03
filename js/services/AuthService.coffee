@@ -14,12 +14,12 @@ module.exports = ["$http","SessionService", "$log",($http, Session, $log) ->
         )
     login: (credentials) ->
       $log.debug "logging in"
-      return $http
+      $http
         .post("/auth/login", credentials)
         .then((res) ->
-          $log.debug "responce", res
+          $log.debug "response", res.data
           Session.create(res.data.id, res.data.user.id, res.data.user.role)
-          return res.data.user
+          res.data.user
         )
     isAuthenticated: ->
       !!Session.userId

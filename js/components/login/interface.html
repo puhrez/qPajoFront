@@ -3,8 +3,8 @@
       <div style="float:right" ng-click="LoginCtrl.close()">X</div>
       <toggle 
         ctrl="LoginCtrl" 
-        left="LoginCtrl.login.title"
-        right="LoginCtrl.register.title">
+        left="LoginCtrl.loginView.title"
+        right="LoginCtrl.registerView.title">
       </toggle>
         <form class="loginForm">
           <div ng-if="!LoginCtrl.bool">
@@ -12,19 +12,22 @@
           <input
                  id="email"
                  type="email" 
-                 ng-model="LoginCtrl.user.email">
+                 ng-model="LoginCtrl.user.email"
+                 value="me@gmail.com">
           </div>
           <div>
           <label for="username">Username</label>
           <input type="text" 
                  id="username"
-                 ng-model="LoginCtrl.user.id">
+                 ng-model="LoginCtrl.user.id"
+                 value="test">
           </div>
           <div>
            <label for="password">Password</label>
           <input type="password"
                  id="password"
-                 ng-model="LoginCtrl.user.password"></div>    
+                 ng-model="LoginCtrl.user.password"
+                 value="pie"></div>    
         <button type="submit" ng-click="LoginCtrl.submit()" class="btn bordered center">{{LoginCtrl.btn.message}}</button>
         </form>
 </div>

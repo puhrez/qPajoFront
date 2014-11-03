@@ -189,10 +189,12 @@ angular.module("qpajo", ["ngRoute", require("./constants/index.coffee").name, re
 module.exports = [
   "$scope", "USER_ROLES", "AuthService", "$location", "$log", function($scope, USER_ROLES, AuthService, $location, $log) {
     $log.debug("app init");
+    $log.debug("authed?", AuthService.isAuthenticated());
     return $scope.app = {
       showLogin: $location.path() === "/login" || $location.path() === "/register",
       currentUser: null,
       userRoles: USER_ROLES,
+      isAuthenticated: AuthService.isAuthenticated,
       isAuthorized: AuthService.isAuthorized,
       setCurrentUser: function(user) {
         return this.currentUser = user;
@@ -212,13 +214,6 @@ module.exports = function() {
       this.$scope = $scope;
       this.$rootScope = $rootScope;
       this.$log = $log;
-      this.$log.debug("header init");
-      this.$scope.model = {
-        message: $scope.app.isAuthenticated ? "&#5864;" : "Login"
-      };
-      this.$rootScope.$on("auth-login-success", function() {
-        return this.$scope.model.message = "&#5864;";
-      });
     }
 
     HeaderCtrl.prototype.openLogin = function() {
@@ -244,7 +239,7 @@ module.exports = function() {
 
 
 },{"./header.html":13}],13:[function(require,module,exports){
-module.exports = '<header>\n  <h2 class="spaced">qpajo</h2>\n<icon><h2>&#9906;</h2></icon>\n  <input type="text">\n  <button ng-click="HeaderCtrl.openLogin()">{{model.message}}</button>\n</header>';
+module.exports = '<header>\n  <h2 class="spaced">qpajo</h2>\n<icon><h2>&#9906;</h2></icon>\n  <input type="text">\n  <button\n      ng-if="!HeaderCtrl.$scope.app.isAuthenticated()" \n      ng-click="HeaderCtrl.openLogin()">\n    Login\n  </button>\n  <button \n      ng-if="HeaderCtrl.$scope.app.isAuthenticated()">\n    Menu\n  </button>\n</header>';
 },{}],14:[function(require,module,exports){
 "use strict";
 var angular;
@@ -276,7 +271,7 @@ module.exports = angular.module("qpajo.login.main", []).directive("qpajo.login",
 
 
 },{"./loginDirective.coffee":18,"angular":32}],17:[function(require,module,exports){
-module.exports = '<div class="cover">\n    <div class="pop-up center">\n      <div style="float:right" ng-click="LoginCtrl.close()">X</div>\n      <toggle \n        ctrl="LoginCtrl" \n        left="LoginCtrl.login.title"\n        right="LoginCtrl.register.title">\n      </toggle>\n        <form class="loginForm">\n          <div ng-if="!LoginCtrl.bool">\n          <label for="email">Email</label>\n          <input\n                 id="email"\n                 type="email" \n                 ng-model="LoginCtrl.user.email">\n          </div>\n          <div>\n          <label for="username">Username</label>\n          <input type="text" \n                 id="username"\n                 ng-model="LoginCtrl.user.id">\n          </div>\n          <div>\n           <label for="password">Password</label>\n          <input type="password"\n                 id="password"\n                 ng-model="LoginCtrl.user.password"></div>    \n        <button type="submit" ng-click="LoginCtrl.submit()" class="btn bordered center">{{LoginCtrl.btn.message}}</button>\n        </form>\n</div>';
+module.exports = '<div class="cover">\n    <div class="pop-up center">\n      <div style="float:right" ng-click="LoginCtrl.close()">X</div>\n      <toggle \n        ctrl="LoginCtrl" \n        left="LoginCtrl.loginView.title"\n        right="LoginCtrl.registerView.title">\n      </toggle>\n        <form class="loginForm">\n          <div ng-if="!LoginCtrl.bool">\n          <label for="email">Email</label>\n          <input\n                 id="email"\n                 type="email" \n                 ng-model="LoginCtrl.user.email"\n                 value="me@gmail.com">\n          </div>\n          <div>\n          <label for="username">Username</label>\n          <input type="text" \n                 id="username"\n                 ng-model="LoginCtrl.user.id"\n                 value="test">\n          </div>\n          <div>\n           <label for="password">Password</label>\n          <input type="password"\n                 id="password"\n                 ng-model="LoginCtrl.user.password"\n                 value="pie"></div>    \n        <button type="submit" ng-click="LoginCtrl.submit()" class="btn bordered center">{{LoginCtrl.btn.message}}</button>\n        </form>\n</div>';
 },{}],18:[function(require,module,exports){
 "use strict";
 module.exports = function() {
@@ -303,11 +298,11 @@ module.exports = function() {
         password: "",
         role: "admin"
       };
-      this.login = {
+      this.loginView = {
         title: "Login",
         url: "./views/login.html"
       };
-      this.register = {
+      this.registerView = {
         title: "Sign-up",
         url: "./views/register.html"
       };
@@ -319,27 +314,25 @@ module.exports = function() {
       return this.$scope.app.showLogin = false;
     };
 
+    LoginCtrl.prototype.login = function(credentials) {
+      this.$log.debug("hello from login");
+      return this.AuthService.login(credentials).then((function(_this) {
+        return function(user) {
+          _this.$rootScope.$broadcast(_this.AUTH_EVENTS.loginSuccess);
+          _this.$scope.app.setCurrentUser(user);
+          _this.$log.debug("is authed", _this.AuthService.isAuthenticated());
+          return _this.close();
+        };
+      })(this));
+    };
+
     LoginCtrl.prototype.submit = function() {
       if (this.bool) {
-        this.AuthService.login(this.user).then(function(user) {}, this.$rootScope.$broadcast(this.AUTH_EVENTS.loginSucess), this.$scope.app.setCurrentUser(user));
+        this.login(this.user);
       } else {
         this.AuthService.register(this.user);
       }
       return this.$log.debug("submit");
-    };
-
-    LoginCtrl.prototype.register = function(credentials) {
-      this.$log.debug("bool on reg", this.bool);
-      return this.AuthService.register(credentials);
-    };
-
-    LoginCtrl.prototype.login = function(credentials) {
-      this.$log.debug("hello from login");
-      return this.AuthService.login(credentials).then(function(user) {
-        this.$log.debug("then", user);
-        this.$rootScope.$broadcast(this.AUTH_EVENTS.loginSucess);
-        return this.$scope.app.setCurrentUser(user);
-      });
     };
 
     LoginCtrl.prototype["switch"] = function() {
@@ -422,7 +415,14 @@ module.exports = function($scope) {
 module.exports = function($httpBackend, $log) {
   var session, users;
   $log.debug("backend init");
-  users = [];
+  users = [
+    {
+      email: "michaelp193@gmail.com",
+      id: "test",
+      password: "pie",
+      role: "admin"
+    }
+  ];
   session = 0;
   $httpBackend.whenPOST("/auth/register").respond(function(method, url, data) {
     var user;
@@ -433,23 +433,29 @@ module.exports = function($httpBackend, $log) {
   });
   $httpBackend.whenGET(/S*\.html$/).passThrough();
   return $httpBackend.whenPOST("/auth/login").respond(function(method, url, data) {
-    var creds, successData, user, _i, _len;
+    var creds, response, successData, user, _i, _len;
+    response = [
+      404, {
+        message: "Password or User not correct"
+      }, {}
+    ];
     $log.debug("hitting login post");
     creds = angular.fromJson(data);
+    $log.debug("creds are", creds);
     successData = {
-      data: {
-        id: session += 1,
-        user: creds
-      }
+      id: session += 1,
+      user: creds
     };
-    $log.debug("successData", successData);
     for (_i = 0, _len = users.length; _i < _len; _i++) {
       user = users[_i];
-      if (creds === user) {
-        return successData;
+      $log.debug("user is", user);
+      if (creds.id === user.id && creds.password === user.password) {
+        response = [200, successData, {}];
+        $log.debug("SUCCEESS!", successData);
+        return response;
       }
     }
-    return 400;
+    return response;
   });
 };
 
@@ -496,7 +502,7 @@ module.exports = [
       AuthService.prototype.login = function(credentials) {
         $log.debug("logging in");
         return $http.post("/auth/login", credentials).then(function(res) {
-          $log.debug("responce", res);
+          $log.debug("response", res.data);
           Session.create(res.data.id, res.data.user.id, res.data.user.role);
           return res.data.user;
         });

@@ -17,37 +17,31 @@ module.exports = ->
         id: ""
         password: ""
         role: "admin"
-      @login =
+      @loginView =
         title: "Login"
         url: "./views/login.html"
-      @register =
+      @registerView =
         title: "Sign-up"
         url: "./views/register.html"
       @$log.debug "login int"
     close: ->
       @$log.debug "close"
       @$scope.app.showLogin = false
-    submit: ->
-      if @bool
-        @AuthService.login @user
-          .then((user) ->
-          @$rootScope.$broadcast @AUTH_EVENTS.loginSucess
-          @$scope.app.setCurrentUser user
-        )
-      else
-        @AuthService.register @user
-      @$log.debug "submit"
-    register: (credentials) ->
-      @$log.debug "bool on reg", @bool
-      @AuthService.register credentials
     login: (credentials) ->
       @$log.debug "hello from login"
       @AuthService.login credentials
-        .then((user) ->
-          @$log.debug "then", user
-          @$rootScope.$broadcast @AUTH_EVENTS.loginSucess
+        .then((user) =>
+          @$rootScope.$broadcast @AUTH_EVENTS.loginSuccess
           @$scope.app.setCurrentUser user
+          @$log.debug "is authed", @AuthService.isAuthenticated()
+          @close()
         )
+    submit: ->
+      if @bool
+        @login @user
+      else
+        @AuthService.register @user
+      @$log.debug "submit"
     switch: ->
       @bool = !@bool
       @btn.message = if @bool then "Login" else "Register"

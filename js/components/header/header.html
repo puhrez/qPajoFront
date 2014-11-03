@@ -2,5 +2,13 @@
   <h2 class="spaced">qpajo</h2>
 <icon><h2>&#9906;</h2></icon>
   <input type="text">
-  <button ng-click="HeaderCtrl.openLogin()">{{model.message}}</button>
+  <button
+      ng-if="!HeaderCtrl.$scope.app.isAuthenticated()" 
+      ng-click="HeaderCtrl.openLogin()">
+    Login
+  </button>
+  <button 
+      ng-if="HeaderCtrl.$scope.app.isAuthenticated()">
+    Menu
+  </button>
 </header>
