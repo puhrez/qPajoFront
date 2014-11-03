@@ -10,17 +10,11 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'sinon-chai'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      '"/Users/admin/public/quepasaapp/backend/public/app.js"',
-      '"./public/app.js"',
-      '"../public/app.js"',
-      '"app.js"',
-      '"js/app.js"',
-      '"./js/app.js"',
       './js/app.js',
       './test/**/*Spec.js',
       './test/**/*Spec.js'
