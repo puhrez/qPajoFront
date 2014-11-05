@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 
-gulp.task('Watch', ['Setting Watch Status', 'browserSync'], function () {
+gulp.task('Watch', ['browserSync'], function () {
   gulp.watch("./js/**/*.coffee", ["browserify", "Moving app"]);
   gulp.watch("./js/**/*.html", ["browserify", "Moving app"]);
   gulp.watch('./style/*.less', ['Compiling less']);

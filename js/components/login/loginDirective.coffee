@@ -8,7 +8,8 @@ module.exports = ->
                   @$rootScope,
                   @AUTH_EVENTS,
                   @AuthService,
-                  @$location, @$log) ->
+                  @$location,
+                  @$log, @$timeout) ->
       @bool = $location.path() is "/login"
       @btn =
         message: if @bool then "Login" else "Register"
@@ -23,7 +24,8 @@ module.exports = ->
       @registerView =
         title: "Sign-up"
         url: "./views/register.html"
-      @$log.debug "login int"
+        message: "Registration Successful"
+      @$log.debug "login int blue"
     close: ->
       @$log.debug "close"
       @$scope.app.showLogin = false
@@ -34,29 +36,45 @@ module.exports = ->
           @$rootScope.$broadcast @AUTH_EVENTS.loginSuccess
           @$scope.app.setCurrentUser user
           @$log.debug "is authed", @AuthService.isAuthenticated()
+          @clear()
           @close()
         )
-    submit: ->
+    register: (creds) ->
+      @$log.debug "hello from reg"
+      @AuthService.register @user
+        .then((res) =>
+          @$log.debug "register hit true"
+          @registerView.success = true
+          @clear()
+          @$timeout(() =>
+            @registerView.success = false
+          ,1000)
+        )
+    submit: (user) ->
       if @bool
-        @login @user
+        @login user
       else
-        @AuthService.register @user
+        @register user
       @$log.debug "submit"
     switch: ->
       @bool = !@bool
       @btn.message = if @bool then "Login" else "Register"
       @$log.debug "bool is now", @bool
+    clear: ->
+      @user.email = ""
+      @user.password = ""
+      @user.id = ""
   restrict: "E"
   controllerAs: "LoginCtrl"
   controller: ["$scope",
                "$rootScope", "AUTH_EVENTS",
     "AuthService",
-    "$location", "$log",
-    ($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $log) ->
+    "$location", "$log", "$timeout",
+    ($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $log, $timeout) ->
               new LoginCtrl($scope,
                             $rootScope,
                             AUTH_EVENTS,
                             AuthService,
-                            $location, $log)
+                            $location, $log, $timeout)
   ]
   template: require "./interface.html"

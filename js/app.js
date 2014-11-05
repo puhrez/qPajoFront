@@ -271,7 +271,7 @@ module.exports = angular.module("qpajo.login.main", []).directive("qpajo.login",
 
 
 },{"./loginDirective.coffee":18,"angular":32}],17:[function(require,module,exports){
-module.exports = '<div class="cover">\n    <div class="pop-up center">\n      <div style="float:right" ng-click="LoginCtrl.close()">X</div>\n      <toggle \n        ctrl="LoginCtrl" \n        left="LoginCtrl.loginView.title"\n        right="LoginCtrl.registerView.title">\n      </toggle>\n        <form class="loginForm">\n          <div ng-if="!LoginCtrl.bool">\n          <label for="email">Email</label>\n          <input\n                 id="email"\n                 type="email" \n                 ng-model="LoginCtrl.user.email"\n                 value="me@gmail.com">\n          </div>\n          <div>\n          <label for="username">Username</label>\n          <input type="text" \n                 id="username"\n                 ng-model="LoginCtrl.user.id"\n                 value="test">\n          </div>\n          <div>\n           <label for="password">Password</label>\n          <input type="password"\n                 id="password"\n                 ng-model="LoginCtrl.user.password"\n                 value="pie"></div>    \n        <button type="submit" ng-click="LoginCtrl.submit()" class="btn bordered center">{{LoginCtrl.btn.message}}</button>\n        </form>\n</div>';
+module.exports = '<div class="cover">\n    <div class="pop-up center">\n      <div style="float:right" ng-click="LoginCtrl.close()">X</div>\n      <toggle \n        ctrl="LoginCtrl" \n        left="LoginCtrl.loginView.title"\n        right="LoginCtrl.registerView.title">\n      </toggle>\n        <h4 \n            class="success label" \n            ng-if="LoginCtrl.registerView.success">\n          {{LoginCtrl.registerView.message}}\n      </h4>\n        <form class="loginForm" ng-submit="LoginCtrl.submit(LoginCtrl.user)">\n          <div ng-if="!LoginCtrl.bool">\n          <label for="email">Email</label>\n          <input\n                 id="email"\n                 type="email" \n                 ng-model="LoginCtrl.user.email"\n                 value="me@gmail.com">\n          </div>\n          <div>\n          <label for="username">Username</label>\n          <input type="text" \n                 id="username"\n                 ng-model="LoginCtrl.user.id"\n                 value="test">\n          </div>\n          <div>\n           <label for="password">Password</label>\n          <input type="password"\n                 id="password"\n                 ng-model="LoginCtrl.user.password"\n                 value="pie"></div>    \n        <input type="submit" value="{{LoginCtrl.btn.message}}" class="btn bordered center">\n        </form>\n</div>';
 },{}],18:[function(require,module,exports){
 "use strict";
 module.exports = function() {
@@ -281,13 +281,14 @@ module.exports = function() {
 
     LoginCtrl.prototype.bool = false;
 
-    function LoginCtrl($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $log) {
+    function LoginCtrl($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $log, $timeout) {
       this.$scope = $scope;
       this.$rootScope = $rootScope;
       this.AUTH_EVENTS = AUTH_EVENTS;
       this.AuthService = AuthService;
       this.$location = $location;
       this.$log = $log;
+      this.$timeout = $timeout;
       this.bool = $location.path() === "/login";
       this.btn = {
         message: this.bool ? "Login" : "Register"
@@ -304,9 +305,10 @@ module.exports = function() {
       };
       this.registerView = {
         title: "Sign-up",
-        url: "./views/register.html"
+        url: "./views/register.html",
+        message: "Registration Successful"
       };
-      this.$log.debug("login int");
+      this.$log.debug("login int blue");
     }
 
     LoginCtrl.prototype.close = function() {
@@ -321,16 +323,31 @@ module.exports = function() {
           _this.$rootScope.$broadcast(_this.AUTH_EVENTS.loginSuccess);
           _this.$scope.app.setCurrentUser(user);
           _this.$log.debug("is authed", _this.AuthService.isAuthenticated());
+          _this.clear();
           return _this.close();
         };
       })(this));
     };
 
-    LoginCtrl.prototype.submit = function() {
+    LoginCtrl.prototype.register = function(creds) {
+      this.$log.debug("hello from reg");
+      return this.AuthService.register(this.user).then((function(_this) {
+        return function(res) {
+          _this.$log.debug("register hit true");
+          _this.registerView.success = true;
+          _this.clear();
+          return _this.$timeout(function() {
+            return _this.registerView.success = false;
+          }, 1000);
+        };
+      })(this));
+    };
+
+    LoginCtrl.prototype.submit = function(user) {
       if (this.bool) {
-        this.login(this.user);
+        this.login(user);
       } else {
-        this.AuthService.register(this.user);
+        this.register(user);
       }
       return this.$log.debug("submit");
     };
@@ -341,6 +358,12 @@ module.exports = function() {
       return this.$log.debug("bool is now", this.bool);
     };
 
+    LoginCtrl.prototype.clear = function() {
+      this.user.email = "";
+      this.user.password = "";
+      return this.user.id = "";
+    };
+
     return LoginCtrl;
 
   })();
@@ -348,8 +371,8 @@ module.exports = function() {
     restrict: "E",
     controllerAs: "LoginCtrl",
     controller: [
-      "$scope", "$rootScope", "AUTH_EVENTS", "AuthService", "$location", "$log", function($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $log) {
-        return new LoginCtrl($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $log);
+      "$scope", "$rootScope", "AUTH_EVENTS", "AuthService", "$location", "$log", "$timeout", function($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $log, $timeout) {
+        return new LoginCtrl($scope, $rootScope, AUTH_EVENTS, AuthService, $location, $log, $timeout);
       }
     ],
     template: require("./interface.html")
@@ -494,8 +517,8 @@ module.exports = [
 
       AuthService.prototype.register = function(credentials) {
         console.log("registering", credentials);
-        return $http.post("/auth/register", credentials).then(function() {
-          return true;
+        return $http.post("/auth/register", credentials).then(function(res) {
+          return res;
         });
       };
 

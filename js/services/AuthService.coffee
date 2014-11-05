@@ -9,8 +9,8 @@ module.exports = ["$http","SessionService", "$log",($http, Session, $log) ->
       console.log "registering", credentials
       $http
         .post("/auth/register", credentials)
-        .then(() ->
-          true
+        .then((res) ->
+          res
         )
     login: (credentials) ->
       $log.debug "logging in"

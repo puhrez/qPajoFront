@@ -6,7 +6,12 @@
         left="LoginCtrl.loginView.title"
         right="LoginCtrl.registerView.title">
       </toggle>
-        <form class="loginForm">
+        <h4 
+            class="success label" 
+            ng-if="LoginCtrl.registerView.success">
+          {{LoginCtrl.registerView.message}}
+      </h4>
+        <form class="loginForm" ng-submit="LoginCtrl.submit(LoginCtrl.user)">
           <div ng-if="!LoginCtrl.bool">
           <label for="email">Email</label>
           <input
@@ -28,6 +33,6 @@
                  id="password"
                  ng-model="LoginCtrl.user.password"
                  value="pie"></div>    
-        <button type="submit" ng-click="LoginCtrl.submit()" class="btn bordered center">{{LoginCtrl.btn.message}}</button>
+        <input type="submit" value="{{LoginCtrl.btn.message}}" class="btn bordered center">
         </form>
 </div>
